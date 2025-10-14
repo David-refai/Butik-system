@@ -12,7 +12,7 @@ import org.example.Service.OrderService;
 import org.example.Service.ServiceCrud;
 import org.example.Utils.Data;
 import org.example.Utils.Identify;
-import org.example.Utils.Menu;
+import org.example.Utils.Utility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.example.Utils.Identify.updateFlow;
+import static org.example.Utils.Utility.readLine;
 
 /**
  * CLI entry and routing for Butik System.
@@ -59,97 +60,7 @@ public class App {
     // Current entity context: "Customer" | "Product" | "Order"
     private static String idx;
 
-    // ==================== Input helpers ====================
 
-    /**
-     * Prompt+read a single trimmed line.
-     */
-    private static String readLine(String prompt) {
-        System.out.print(prompt);
-        return scanner.nextLine().trim();
-    }
-
-    /**
-     * Read a non-empty string (loops until valid).
-     */
-    private static String readNonEmpty(String prompt) {
-        while (true) {
-            String s = readLine(prompt);
-            if (!s.isEmpty()) return s;
-            System.out.println("Value cannot be empty. Try again.");
-        }
-    }
-
-    /**
-     * Read an int in [1..max].
-     */
-    private static int readInt(String prompt, int max) {
-        while (true) {
-            String s = readLine(prompt);
-            try {
-                int v = Integer.parseInt(s);
-                if (v < 1 || v > max) {
-                    System.out.printf("Out of range (%d-%d).%n", 1, max);
-                    continue;
-                }
-                return v;
-            } catch (NumberFormatException e) {
-                log.warn(e.getMessage());
-                System.out.println("Invalid number. Try again.");
-            }
-        }
-    }
-
-    /**
-     * Shortcut: read a choice in 1..6.
-     */
-    private static int readMenu1to6() {
-        return readInt("Your choice [1-6]: ", 6);
-    }
-
-    /**
-     * Read a positive integer (>0).
-     */
-    private static int readPositiveInt(String prompt) {
-        while (true) {
-            String s = readLine(prompt);
-            try {
-                int v = Integer.parseInt(s);
-                if (v > 0) return v;
-            } catch (NumberFormatException ignored) {
-            }
-            System.out.println("Enter a positive number.");
-        }
-    }
-
-    /**
-     * Read a non-negative price (double >= 0).
-     */
-    private static double readDouble() {
-        while (true) {
-            String s = readLine("Enter a price: ");
-            try {
-                double v = Double.parseDouble(s);
-                if (v >= 0.0) return v;
-                System.out.println("Value must be >= 0.0");
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid number. Try again.");
-            }
-        }
-    }
-
-    /**
-     * Pick a Category from the enum by index.
-     */
-    private static Category readCategory() {
-        Category[] cats = Category.values();
-        System.out.println("Choose a category:");
-        for (int i = 0; i < cats.length; i++) {
-            System.out.printf("%d) %s%n", i + 1, cats[i].name());
-        }
-        int choice = readInt("Category [1-" + cats.length + "]: ", cats.length);
-        return cats[choice - 1];
-    }
 
     // ==================== App start ====================
 
@@ -158,12 +69,12 @@ public class App {
      * Seeds initial demo data then shows the main menu.
      */
     public static void start() {
-        Menu.printBanner();
+        Utility.printBanner();
         seedData();
 
         while (true) {
             System.out.println("Choose an entity:\n1) Customer\n2) Product\n3) Order\n4) Exit");
-            String choice = readLine("Your choice: ");
+            String choice = Utility.readLine("Your choice: ");
 
             switch (choice) {
                 case "1":
@@ -206,8 +117,8 @@ public class App {
         };
 
         while (true) {
-            Menu.printMenu(menuOptions);
-            int choice = readMenu1to6();
+            Utility.printMenu(menuOptions);
+            int choice = Utility.readMenu1to6();
 
             switch (choice) {
                 case 1: // Add
@@ -304,7 +215,7 @@ public class App {
                     break;
 
                 case 4: // Delete
-                    String delId = readLine("Enter " + entity + " ID to delete: ");
+                    String delId = Utility.readLine("Enter " + entity + " ID to delete: ");
                     Safe.run(() -> {
                         if ("Customer".equals(idx)) customerService.delete(delId);
                         else if ("Product".equals(idx)) prodService.delete(delId);
@@ -501,26 +412,26 @@ public class App {
 
                 switch (choice) {
                     case 1: { // add
-                        String pid = readNonEmpty("Enter Product ID to add: ");
+                        String pid = Utility.readNonEmpty("Enter Product ID to add: ");
                         var pOpt = prodService.findOptionalById(pid);
                         if (pOpt.isEmpty()) {
                             System.out.println("Product not found: " + pid);
                             break;
                         }
-                        int qtyToAdd = readPositiveInt("Quantity to add: ");
+                        int qtyToAdd = Utility.readPositiveInt("Quantity to add: ");
                         for (int i = 0; i < qtyToAdd; i++) o.getProducts().add(pOpt.get());
                         System.out.println("Added " + qtyToAdd + " x " + pOpt.get().getName());
                         break;
                     }
                     case 2: { // remove
-                        String pid = readNonEmpty("Enter Product ID to remove: ");
+                        String pid = Utility.readNonEmpty("Enter Product ID to remove: ");
                         long currentQty = o.getProducts().stream().filter(p -> p.getId().equals(pid)).count();
                         if (currentQty == 0) {
                             System.out.println("This product is not in the order.");
                             break;
                         }
                         System.out.println("Current qty = " + currentQty);
-                        int qtyToRemove = readPositiveInt("Quantity to remove: ");
+                        int qtyToRemove = Utility.readPositiveInt("Quantity to remove: ");
                         if (qtyToRemove > currentQty) qtyToRemove = (int) currentQty;
 
                         int removed = 0;
@@ -535,13 +446,13 @@ public class App {
                         break;
                     }
                     case 3: { // set exact qty
-                        String pid = readNonEmpty("Enter Product ID to set qty: ");
+                        String pid = Utility.readNonEmpty("Enter Product ID to set qty: ");
                         var pOpt = prodService.findOptionalById(pid);
                         if (pOpt.isEmpty()) {
                             System.out.println("Product not found: " + pid);
                             break;
                         }
-                        int newQty = readPositiveInt("New quantity: ");
+                        int newQty = Utility.readPositiveInt("New quantity: ");
                         o.getProducts().removeIf(p -> p.getId().equals(pid));
                         for (int i = 0; i < newQty; i++) o.getProducts().add(pOpt.get());
                         System.out.println("Quantity set to " + newQty + " for " + pOpt.get().getName());
@@ -579,8 +490,8 @@ public class App {
      * - The Customer class should generate its own ID (e.g., UUID) in the constructor.
      */
     private static Customer createCustomer(Scanner sc) {
-        String name = readNonEmpty("Enter name: ");
-        String city = readNonEmpty("Enter city: ");
+        String name = Utility.readNonEmpty("Enter name: ");
+        String city = Utility.readNonEmpty("Enter city: ");
         return new Customer(name, city);
     }
 
@@ -594,9 +505,9 @@ public class App {
      * - Product should generate its own ID (e.g., UUID) in the constructor.
      */
     private static Product createProduct(Scanner sc) {
-        String name = readNonEmpty("Enter product name: ");
-        Category category = readCategory();
-        double price = readDouble();
+        String name = Utility.readNonEmpty("Enter product name: ");
+        Category category = Utility.readCategory();
+        double price = Utility.readDouble();
         return new Product(name, category, price);
     }
 
@@ -634,7 +545,7 @@ public class App {
         System.out.println("=".repeat(Math.max(0, allCustomers.size() - 1)));
 
         while (true) {
-            String customerId = readNonEmpty("Enter Customer ID (or 'back' to cancel): ");
+            String customerId = Utility.readNonEmpty("Enter Customer ID (or 'back' to cancel): ");
             if ("back".equalsIgnoreCase(customerId)) return null;
             if (customerService.findOptionalById(customerId).isPresent()) return customerId;
             System.out.println("Customer not found: " + customerId);
@@ -679,7 +590,7 @@ public class App {
             // (3) collect items
             Map<String, Integer> items = new LinkedHashMap<>();
             while (true) {
-                String pid = readNonEmpty("Enter Product ID (or 'done' to finish): ");
+                String pid = Utility.readNonEmpty("Enter Product ID (or 'done' to finish): ");
                 if (pid.equalsIgnoreCase("done")) break;
 
                 var pOpt = prodService.findOptionalById(pid);
@@ -687,7 +598,7 @@ public class App {
                     System.out.println("Product not found: " + pid);
                     continue;
                 }
-                int qty = readPositiveInt("Qty: ");
+                int qty = Utility.readPositiveInt("Qty: ");
                 items.merge(pid, qty, Integer::sum);
             }
             if (items.isEmpty()) {
