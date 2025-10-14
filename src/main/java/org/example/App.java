@@ -20,13 +20,24 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.example.Utils.Identify.updateFlow;
-import static org.example.Utils.Menu.printBanner;
 
 /**
- * Simple CLI app to manage Customers, Products, and Orders.
- * Uses in-memory repositories and a generic service layer.
- * NOTE: This app is for training/demos (non-persistent).
+ * CLI entry and routing for Butik System.
+ *
+ * <p>Responsibilities:
+ * <ul>
+ *   <li>Start banner and optional seed data.</li>
+ *   <li>Main and secondary menus for Customer/Product/Order.</li>
+ *   <li>Interactive creators/editors delegating to services.</li>
+ * </ul>
+ *
+ * <p>Invariants:
+ * <ul>
+ *   <li>Entities generate their IDs internally.</li>
+ *   <li>Validation happens at input time and in services.</li>
+ * </ul>
  */
+
 public class App {
 
     // SLF4J logger (prefer SLF4J over java.util.logging)
@@ -617,17 +628,16 @@ public class App {
     }
 
     /**
-     * Interactive order creator:
-     *  1) Choose a valid customer (or abort)
-     *  2) Show products
-     *  3) Collect productId -> quantity
-     *  4) Expand to a flat List<Product>
-     *  5) Compute total
-     *  6) Construct Order with customerId
+     * Interactively builds an {@link org.example.Entity.Order}:
+     * <ol>
+     *   <li>Pick a valid customer (or abort).</li>
+     *   <li>Display products and collect productId → quantity.</li>
+     *   <li>Expand quantities to a flat list of products and compute total.</li>
+     * </ol>
      *
-     * ID policy:
-     *  - The Order class should auto-generate ID in its constructor.
+     * @return a new Order or {@code null} if aborted by user
      */
+
     private static Order createOrderInteractive() {
         try {
             // (1) customer

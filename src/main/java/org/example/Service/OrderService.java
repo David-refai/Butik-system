@@ -9,6 +9,14 @@ import org.example.Reposotory.CrudRepo;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+/**
+ * Order-specific orchestration:
+ * <ul>
+ *   <li>Validates customer existence before create/update.</li>
+ *   <li>Expands product quantities, computes totals if needed.</li>
+ *   <li>Provides convenience queries (e.g., by customer).</li>
+ * </ul>
+ */
 
 public class OrderService extends ServiceCrud<Order, String> {
 

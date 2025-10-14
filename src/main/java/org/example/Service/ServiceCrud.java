@@ -9,14 +9,18 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Generic service layer for CRUD operations with validation.
- * - No UI/printing here (pure domain/service).
- * - Throws domain exceptions (Safe.*) instead of IllegalArgumentException.
- * - Works with any T that exposes getId() (Identifiable).
+ * Minimal service wrapper over a {@code CrudRepo<T, ID>} repository.
+ *
+ * <p>Responsibilities:
+ * <ul>
+ *   <li>Provide Optional-based lookups.</li>
+ *   <li>Centralize basic validation and exceptions for CRUD.</li>
+ * </ul>
  *
  * @param <T>  entity type
- * @param <ID> id type
+ * @param <ID> identifier type
  */
+
 public class ServiceCrud<T extends Identifiable<ID>, ID> {
 
     protected final CrudRepo<T, ID> crudRepo;

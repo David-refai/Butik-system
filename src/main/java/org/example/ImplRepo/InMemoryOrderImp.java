@@ -7,22 +7,21 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * {@code InMemoryOrderImp} is an in-memory implementation of {@link CrudRepo}
- * for managing {@link Order} entities.
- * -
- * ***This implementation uses two concurrent maps:
- * -
- * - Primary store:{@code Map<orderId, Order>} – enables O(1) CRUD operations by ID.</li>
- * - Secondary index: {@code Map<customerId, List<orderId>>} – allows fast lookup of all orders by customer.
- * -
- * ***Concurrency-safe via {@link ConcurrentHashMap}, and maintains index consistency on create, update, and delete.
- * Uses {@link Map#computeIfAbsent(Object, java.util.function.Function)} to handle index creation atomically.
- * *
+ * In-memory Order repository with:
+ * <ul>
+ *   <li>Primary store: {@code Map<orderId, Order>} — O(1) CRUD by ID.</li>
+ *   <li>Secondary index: {@code Map<customerId, List<orderId>>} for efficient lookups.</li>
+ * </ul>
  *
- * @author David
- * @version 1.0
- * @since 2025-10-14
+ * <p>Consistency:
+ * <ul>
+ *   <li>Indexes are updated on create, update (reindex if customer changes), and delete.</li>
+ *   <li>Uses {@code computeIfAbsent} to atomically create per-customer lists.</li>
+ * </ul>
+ *
+ * <p>Thread-safety: backed by {@code ConcurrentHashMap}.
  */
+
 public class InMemoryOrderImp implements CrudRepo<Order, String> {
 
     /**
@@ -60,7 +59,10 @@ public class InMemoryOrderImp implements CrudRepo<Order, String> {
      * Updates an existing order. If the customerId changes, the index is rebalanced.
      *
      * @param order the updated {@link Order}
-     * @throws IllegalArgumentException if order not found or ID invalid
+     *
+     *
+     * @throws IllegalArgumentException if the entity does not exist or ID is missing
+     *
      */
     @Override
     public void update(Order order) {
