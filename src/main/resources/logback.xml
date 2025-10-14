@@ -1,0 +1,51 @@
+<configuration>
+    <!-- Base directory for log files (create the 'logs' folder or set -DLOG_HOME=/path) -->
+    <property name="LOG_HOME" value="logs"/>
+
+    <!-- Console appender: prints logs to STDOUT -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- Time, level, short logger name, and the message -->
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%logger{36}] - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- File appender with rolling policy (size + time based) -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- Current (active) log file -->
+        <file>${LOG_HOME}/app.log</file>
+
+        <encoder>
+            <!-- Timestamp with date, level, thread, logger, and message -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+
+        <!-- Roll logs by size and by day. Produces files like app.2025-10-13.0.log, app.2025-10-13.1.log -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- Daily file name pattern with index for size-based chunks -->
+            <fileNamePattern>${LOG_HOME}/app.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+
+            <!-- Max size per single rolled file before incrementing %i -->
+            <maxFileSize>10MB</maxFileSize>
+
+            <!-- Cap the total size of all archived logs -->
+            <totalSizeCap>200MB</totalSizeCap>
+
+            <!-- Keep archives for this many days (older files are removed) -->
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Root logger: default level and attached appenders -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+    Optional: per-package level overrides
+    <logger name="org.example.Service" level="DEBUG"/>
+    <logger name="org.hibernate" level="WARN"/>
+
+</configuration>

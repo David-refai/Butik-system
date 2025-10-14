@@ -1,0 +1,2 @@
+2025-10-13 12:50:43.092 INFO  [main] org.example.App - Order created id=b3d6c1ff customerId=f3f2e901 items=2
+2025-10-13 12:51:49.699 INFO  [main] org.example.App - Deleted Order id=b3d6c1ff
