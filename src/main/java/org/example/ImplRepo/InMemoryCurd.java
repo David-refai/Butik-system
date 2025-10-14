@@ -28,7 +28,7 @@ public class InMemoryCurd<T extends Identifiable<ID>, ID> implements CrudRepo<T,
     /**
      * ===== Method UPDATE  =====
      *
-     * @Param T take entity
+     * @param  entity take entity
      */
     @Override
     public void update(T entity) {
@@ -58,7 +58,7 @@ public class InMemoryCurd<T extends Identifiable<ID>, ID> implements CrudRepo<T,
     /**
      * ===== Method Find BY ID  =====
      *
-     * @Param ID, it is generic for identify the entity's id
+     * @param id ram ID, it is generic for identify the entity's id
      */
     @Override
     public Optional<T> findById(ID id) {

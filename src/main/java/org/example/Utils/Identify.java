@@ -9,8 +9,7 @@ import java.util.function.Function;
 /**
  * Generic console flows for create and update operations
  * over a {@code ServiceCrud<T, String>} service.
- *
- * @param <T> entity type implementing {@code Identifiable<String>}
+ *  entity type implementing {@code Identifiable<String>}
  */
 
 public class Identify {
