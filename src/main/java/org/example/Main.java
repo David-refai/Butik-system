@@ -1,4 +1,5 @@
 package org.example;
+
 /**
  * Program entry point for the Butik System CLI.
  * <p>Delegates to {@link org.example.App#start()} to launch the menu loop.</p>

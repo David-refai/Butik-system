@@ -45,12 +45,12 @@ public class App {
 
     // ===== Repositories & Services =====
     private static final CrudRepo<Customer, String> customerRepo = new InMemoryCurd<>();
-    private static final CrudRepo<Product, String>  prodRepo     = new InMemoryCurd<>();
-    private static final CrudRepo<Order, String>    orderRepo    = new InMemoryOrderImp();
+    private static final CrudRepo<Product, String> prodRepo = new InMemoryCurd<>();
+    private static final CrudRepo<Order, String> orderRepo = new InMemoryOrderImp();
 
     private static final ServiceCrud<Customer, String> customerService = new ServiceCrud<>(customerRepo);
-    private static final ServiceCrud<Product, String>  prodService     = new ServiceCrud<>(prodRepo);
-    private static final OrderService                   orderService    =
+    private static final ServiceCrud<Product, String> prodService = new ServiceCrud<>(prodRepo);
+    private static final OrderService orderService =
             new OrderService(orderRepo, prodService, customerService);
 
     // Shared scanner for the entire app lifetime
@@ -61,13 +61,17 @@ public class App {
 
     // ==================== Input helpers ====================
 
-    /** Prompt+read a single trimmed line. */
+    /**
+     * Prompt+read a single trimmed line.
+     */
     private static String readLine(String prompt) {
         System.out.print(prompt);
         return scanner.nextLine().trim();
     }
 
-    /** Read a non-empty string (loops until valid). */
+    /**
+     * Read a non-empty string (loops until valid).
+     */
     private static String readNonEmpty(String prompt) {
         while (true) {
             String s = readLine(prompt);
@@ -76,7 +80,9 @@ public class App {
         }
     }
 
-    /** Read an int in [1..max]. */
+    /**
+     * Read an int in [1..max].
+     */
     private static int readInt(String prompt, int max) {
         while (true) {
             String s = readLine(prompt);
@@ -94,24 +100,31 @@ public class App {
         }
     }
 
-    /** Shortcut: read a choice in 1..6. */
+    /**
+     * Shortcut: read a choice in 1..6.
+     */
     private static int readMenu1to6() {
         return readInt("Your choice [1-6]: ", 6);
     }
 
-    /** Read a positive integer (>0). */
+    /**
+     * Read a positive integer (>0).
+     */
     private static int readPositiveInt(String prompt) {
         while (true) {
             String s = readLine(prompt);
             try {
                 int v = Integer.parseInt(s);
                 if (v > 0) return v;
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+            }
             System.out.println("Enter a positive number.");
         }
     }
 
-    /** Read a non-negative price (double >= 0). */
+    /**
+     * Read a non-negative price (double >= 0).
+     */
     private static double readDouble() {
         while (true) {
             String s = readLine("Enter a price: ");
@@ -125,7 +138,9 @@ public class App {
         }
     }
 
-    /** Pick a Category from the enum by index. */
+    /**
+     * Pick a Category from the enum by index.
+     */
     private static Category readCategory() {
         Category[] cats = Category.values();
         System.out.println("Choose a category:");
@@ -260,7 +275,8 @@ public class App {
                         }
                         System.out.println("------------------".repeat(5));
                         System.out.printf("%-12s %-20s %-20s%n", "ID", "Name", "City");
-                        System.out.println("------------------".repeat(5));                        customers.forEach(c ->
+                        System.out.println("------------------".repeat(5));
+                        customers.forEach(c ->
                                 System.out.printf("%-12s %-20s %-20s%n",
                                         c.getId(), c.getName(), c.getCity()));
                     }
@@ -290,9 +306,9 @@ public class App {
                 case 4: // Delete
                     String delId = readLine("Enter " + entity + " ID to delete: ");
                     Safe.run(() -> {
-                        if ("Customer".equals(idx))      customerService.delete(delId);
-                        else if ("Product".equals(idx))  prodService.delete(delId);
-                        else                             orderService.delete(delId);
+                        if ("Customer".equals(idx)) customerService.delete(delId);
+                        else if ("Product".equals(idx)) prodService.delete(delId);
+                        else orderService.delete(delId);
                         System.out.println("✓ Deleted successfully.");
                         log.info("Deleted {} id={}", idx, delId);
                     }, "Delete" + entity);
@@ -331,7 +347,9 @@ public class App {
         }
     }
 
-    /** Simple table print for products. */
+    /**
+     * Simple table print for products.
+     */
     private static void printAllProducts(List<Product> products) {
         System.out.println("----------------".repeat(5));
         System.out.printf("%-12s %-20s %-20s %-10s%n", "ID", "Name", "Category", "Price");
@@ -408,7 +426,9 @@ public class App {
         }
     }
 
-    /** Build a one-line summary of an order: "Name xQty, ..." */
+    /**
+     * Build a one-line summary of an order: "Name xQty, ..."
+     */
     private static String orderSummary(Order o) {
         String products = (o.getProducts() == null || o.getProducts().isEmpty())
                 ? "-"
@@ -554,9 +574,9 @@ public class App {
     /**
      * Creator for Customer.
      * Input validation:
-     *  - Both fields required (non-empty).
+     * - Both fields required (non-empty).
      * ID policy:
-     *  - The Customer class should generate its own ID (e.g., UUID) in the constructor.
+     * - The Customer class should generate its own ID (e.g., UUID) in the constructor.
      */
     private static Customer createCustomer(Scanner sc) {
         String name = readNonEmpty("Enter name: ");
@@ -567,11 +587,11 @@ public class App {
     /**
      * Creator for Product.
      * Input validation:
-     *  - Name: non-empty
-     *  - Category: chosen from enum menu
-     *  - Price: >= 0.0
+     * - Name: non-empty
+     * - Category: chosen from enum menu
+     * - Price: >= 0.0
      * ID policy:
-     *  - Product should generate its own ID (e.g., UUID) in the constructor.
+     * - Product should generate its own ID (e.g., UUID) in the constructor.
      */
     private static Product createProduct(Scanner sc) {
         String name = readNonEmpty("Enter product name: ");
@@ -582,7 +602,9 @@ public class App {
 
     // ==================== Helpers ====================
 
-    /** Build "Name xQty" list, truncated for table width. */
+    /**
+     * Build "Name xQty" list, truncated for table width.
+     */
     private static String formatOrderItemsNamesWithQty(Order o) {
         if (o.getProducts() == null || o.getProducts().isEmpty()) return "-";
         String s = o.getProducts().stream()
@@ -595,7 +617,9 @@ public class App {
         return s;
     }
 
-    /** Show customers and return a valid ID or null if user typed 'back'. */
+    /**
+     * Show customers and return a valid ID or null if user typed 'back'.
+     */
     private static String pickCustomerIdOrBack() {
         List<Customer> allCustomers = customerService.getAll();
         if (allCustomers.isEmpty()) {
@@ -617,7 +641,9 @@ public class App {
         }
     }
 
-    /** Print all products (helper for order builder). */
+    /**
+     * Print all products (helper for order builder).
+     */
     private static void showAllProducts() {
         List<Product> allProducts = prodService.getAll();
         if (allProducts.isEmpty()) {
@@ -693,8 +719,8 @@ public class App {
 
     /**
      * Demo data seeding:
-     *  - Creates customers & products
-     *  - Creates orders and assigns customers in a round-robin fashion
+     * - Creates customers & products
+     * - Creates orders and assigns customers in a round-robin fashion
      * Assumes entities generate their own IDs (e.g., UUID).
      */
     @SuppressWarnings("unused")

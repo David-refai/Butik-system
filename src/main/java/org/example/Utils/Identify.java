@@ -6,10 +6,11 @@ import org.example.Service.ServiceCrud;
 import java.util.Scanner;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+
 /**
  * Generic console flows for create and update operations
  * over a {@code ServiceCrud<T, String>} service.
- *  entity type implementing {@code Identifiable<String>}
+ * entity type implementing {@code Identifiable<String>}
  */
 
 public class Identify {
@@ -21,11 +22,11 @@ public class Identify {
      *   <li>Print a success line and an optional summary.</li>
      * </ol>
      *
-     * @param service  target service layer
-     * @param scanner  console scanner
+     * @param service     target service layer
+     * @param scanner     console scanner
      * @param entityLabel display label (e.g., "Customer")
-     * @param creator  function that reads from Scanner and returns an entity (or null to abort)
-     * @param summaryFn optional pretty-printer for the created entity
+     * @param creator     function that reads from Scanner and returns an entity (or null to abort)
+     * @param summaryFn   optional pretty-printer for the created entity
      */
 
     // ===== Generic CREATE flow =====
@@ -51,6 +52,7 @@ public class Identify {
             System.out.println("Unexpected error: " + ex.getMessage());
         }
     }
+
     /**
      * Runs a generic update flow:
      * <ol>
@@ -59,11 +61,11 @@ public class Identify {
      *   <li>Save updates via the service.</li>
      * </ol>
      *
-     * @param service   target service layer
-     * @param scanner   console scanner
+     * @param service     target service layer
+     * @param scanner     console scanner
      * @param entityLabel display label
-     * @param summaryFn summary printer used before editing
-     * @param editFn    type-specific in-place editor (Enter keeps current)
+     * @param summaryFn   summary printer used before editing
+     * @param editFn      type-specific in-place editor (Enter keeps current)
      */
 
     // ===== Generic UPDATE flow =====

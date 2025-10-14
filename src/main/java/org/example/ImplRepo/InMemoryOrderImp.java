@@ -59,8 +59,6 @@ public class InMemoryOrderImp implements CrudRepo<Order, String> {
      * Updates an existing order. If the customerId changes, the index is rebalanced.
      *
      * @param order the updated {@link Order}
-     *
-     *
      * @throws IllegalArgumentException if the entity does not exist or ID is missing
      *
      */
