@@ -32,4 +32,4 @@ jobs:
           mvn -v
 
       - name: Build & Test
-        run: mvn -B clean verify --no-transfer-progress
+        run: mvn -B clean verify --no-transfer-progress -Djava.runtime.version=${{ matrix.java }}
