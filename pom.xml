@@ -11,7 +11,7 @@
     <description>CLI app to manage Customers, Products, and Orders</description>
 
     <properties>
-        <maven.compiler.release>21</maven.compiler.release>
+        <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.javadoc.failOnError>true</maven.javadoc.failOnError>
     </properties>
