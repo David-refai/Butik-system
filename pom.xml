@@ -38,15 +38,16 @@
             <!-- Compile with Java 21 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.12.0</version>
                 <configuration>
-                    <release>21</release>
                     <source>21</source>
-                    <target>21</target>
+                    <doclint>all,-missing</doclint>
+                    <failOnError>${maven.javadoc.failOnError}</failOnError>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
+
 
             <!-- Run: mvn -q exec:java -Dexec.mainClass="org.example.Main" -->
             <plugin>
