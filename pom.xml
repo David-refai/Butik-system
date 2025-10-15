@@ -10,11 +10,11 @@
     <name>Butik System</name>
     <description>CLI app to manage Customers, Products, and Orders</description>
 
-    <properties>
-        <maven.compiler.release>17</maven.compiler.release>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.javadoc.failOnError>true</maven.javadoc.failOnError>
-    </properties>
+        <properties>
+            <maven.compiler.release>17</maven.compiler.release>
+            <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        </properties>
+
 
     <dependencies>
         <!-- SLF4J API -->
@@ -42,20 +42,37 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
 
-            <!-- Run: mvn -q exec:java -Dexec.mainClass="org.example.Main" -->
+<!--            Read javadoc-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.12.0</version>
                 <configuration>
-                    <source>${java.runtime.version}</source>
+                    <source>${maven.compiler.release}</source>
                     <doclint>all,-missing</doclint>
                     <failOnError>true</failOnError>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
 
+            <!-- Run: mvn -q exec:java -Dexec.mainClass="org.example.Main" -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <mainClass>org.example.Main</mainClass>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
